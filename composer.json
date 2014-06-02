@@ -1,7 +1,6 @@
 {
     "name": "gwa/gw-image-editor",
     "description": "Simple PHP image manipulation library",
-    "version": "1.0.0",
     "license": "MIT",
     "authors": [
         {
