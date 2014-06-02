@@ -1,0 +1,21 @@
+{
+    "name": "gwa/gw-image-editor",
+    "description": "Simple PHP image manipulation library",
+    "version": "1.0.0",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Great White Ark",
+            "homepage": "http://www.greatwhiteark.com"
+        }
+    ],
+    "homepage": "https://github.com/gwa/gwImageEditor",
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Gwa\\": "src/Gwa/"
+        }
+    }
+}
