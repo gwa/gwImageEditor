@@ -1,11 +1,12 @@
 <?php
+namespace Gwa\Image;
 
-namespace Gwa\Util;
+use Gwa\Exception\gwCoreException;
 
 /**
  * @brief Class containing methods for editing images.
  */
-class ImageEditor
+class gwImageEditor
 {
     /**
      * @access private
@@ -44,13 +45,13 @@ class ImageEditor
     {
         // make sure the GD library is installed
         if (!function_exists('gd_info')) {
-            trigger_error('Gwa/Util/ImageEditor: You do not have the GD Library installed.');
+            trigger_error('Gwa/Util/gwImageEditor: You do not have the GD Library installed.');
         }
         if (!file_exists($filepath)) {
-            throw new \InvalidArgumentException('File does not exist: '.$filepath);
+            throw new gwCoreException(gwCoreException::ERR_INVALID_ARGUMENT, 'File does not exist: '.$filepath);
         }
         if (!is_readable($filepath)) {
-            throw new \InvalidArgumentException('File is not readable: '.$filepath);
+            throw new gwCoreException(gwCoreException::ERR_INVALID_ARGUMENT, 'File is not readable: '.$filepath);
         }
         $this->_filepath = $filepath;
         $this->_getOriginalFileData();
@@ -228,7 +229,7 @@ class ImageEditor
      * @param ImageEditor $imageeditor
      */
     public function pasteImage(
-        ImageEditor $imageeditor,
+        gwImageEditor $imageeditor,
         $dst_x=0,
         $dst_y=0,
         $src_x=0,
@@ -322,7 +323,8 @@ class ImageEditor
     private function _getOriginalFileData()
     {
         if (!$info = getimagesize($this->_filepath)) {
-            throw new \InvalidArgumentException(
+            throw new gwCoreException(
+                gwCoreException::ERR_INVALID_ARGUMENT,
                 'Wrong file type: '.$this->_filepath
             );
         }
@@ -338,7 +340,8 @@ class ImageEditor
         } elseif (stristr($mt, 'png')) {
             $this->_format = 'PNG';
         } else {
-            throw new \InvalidArgumentException(
+            throw new gwCoreException(
+                gwCoreException::ERR_INVALID_ARGUMENT,
                 $this->_filepath.' : '.$this->_mimetype
             );
         }
