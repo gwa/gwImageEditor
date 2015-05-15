@@ -3,7 +3,7 @@ gwImageEditor
 
 A PHP image editor library that uses the bundled GD library.
 
-[![Build Status](https://api.travis-ci.org/gwa/gwImageEditor.svg?branch=master)](https://travis-ci.org/gwa/gwImageEditor)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gwa/gwImageEditor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gwa/gwImageEditor/?branch=master) [![Build Status](https://api.travis-ci.org/gwa/gwImageEditor.svg?branch=master)](https://travis-ci.org/gwa/gwImageEditor)
 
 Provides a simple and intuitive interface for typical editing, cropping, resizing and filtering actions on existing images.
 
