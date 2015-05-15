@@ -38,7 +38,7 @@ class ImageEditor
 
     const DEFAULT_JPEG_QUALITY = 80;
 
-    const FORMAT_JPEG = 'JPG';
+    const FORMAT_JPEG = 'JPEG';
     const FORMAT_GIF  = 'GIF';
     const FORMAT_PNG  = 'PNG';
 
@@ -270,9 +270,46 @@ class ImageEditor
         return $this->crop($x, $y, $width, $height);
     }
 
-    public function filter()
+    /**
+     * @return ImageEditor
+     */
+    public function greyscale()
     {
+        return $this->grayscale();
+    }
 
+    /**
+     * @return ImageEditor
+     */
+    public function grayscale()
+    {
+        imagefilter($this->resource, IMG_FILTER_GRAYSCALE);
+        return $this;
+    }
+
+    /**
+     * @param int $value [-255, +255]
+     *
+     * @return ImageEditor
+     */
+    public function brightness($value)
+    {
+        imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $value);
+        return $this;
+    }
+
+    /**
+     * @param int $value [0, 255]
+     * @param int $value [0, 255]
+     * @param int $value [0, 255]
+     * @param int $value [0, 127]
+     *
+     * @return ImageEditor
+     */
+    public function colorize($red, $green, $blue, $alpha = 0)
+    {
+        imagefilter($this->resource, IMG_FILTER_COLORIZE, $red, $green, $blue, $alpha);
+        return $this;
     }
 
     /**

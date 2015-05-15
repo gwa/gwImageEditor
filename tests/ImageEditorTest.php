@@ -90,9 +90,9 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/awesome.png');
         $editor->resizeToWithin(100, 100)
-            ->saveAs(__DIR__.'/output/awesome_100.png');
+            ->saveAs(__DIR__.'/output/testResizeToWithinPNG.png');
 
-        $editor = new ImageEditor(__DIR__.'/output/awesome_100.png');
+        $editor = new ImageEditor(__DIR__.'/output/testResizeToWithinPNG.png');
         $this->assertEquals(100, $editor->getWidth());
         $this->assertEquals(100, $editor->getHeight());
     }
@@ -150,9 +150,9 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
         $editor->crop(0, 0, 128, 128)
-            ->saveAs(__DIR__.'/output/octopus_crop.jpeg');
+            ->saveAs(__DIR__.'/output/testCrop.jpeg');
 
-        $editor = new ImageEditor(__DIR__.'/output/octopus_crop.jpeg');
+        $editor = new ImageEditor(__DIR__.'/output/testCrop.jpeg');
         $this->assertEquals(128, $editor->getWidth());
         $this->assertEquals(128, $editor->getHeight());
     }
@@ -161,9 +161,9 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
         $editor->cropFromCenter(128, 128)
-            ->saveAs(__DIR__.'/output/octopus_cropcenter.jpeg');
+            ->saveAs(__DIR__.'/output/testCropFromCenter.jpeg');
 
-        $editor = new ImageEditor(__DIR__.'/output/octopus_cropcenter.jpeg');
+        $editor = new ImageEditor(__DIR__.'/output/testCropFromCenter.jpeg');
         $this->assertEquals(128, $editor->getWidth());
         $this->assertEquals(128, $editor->getHeight());
     }
@@ -172,9 +172,9 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/adium.png');
         $editor->rotateClockwise()
-            ->saveAs(__DIR__.'/output/adium_cw.png');
+            ->saveAs(__DIR__.'/output/testRotateClockwise.png');
 
-        $editor = new ImageEditor(__DIR__.'/output/adium_cw.png');
+        $editor = new ImageEditor(__DIR__.'/output/testRotateClockwise.png');
         $this->assertEquals(512, $editor->getWidth());
         $this->assertEquals(360, $editor->getHeight());
     }
@@ -183,9 +183,9 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/adium.png');
         $editor->rotateCounterClockwise()
-            ->saveAs(__DIR__.'/output/adium_ccw.png');
+            ->saveAs(__DIR__.'/output/testRotateCounterClockwise.png');
 
-        $editor = new ImageEditor(__DIR__.'/output/adium_ccw.png');
+        $editor = new ImageEditor(__DIR__.'/output/testRotateCounterClockwise.png');
         $this->assertEquals(512, $editor->getWidth());
         $this->assertEquals(360, $editor->getHeight());
     }
@@ -194,18 +194,32 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/adium.png');
         $editor->rotate180()
-            ->saveAs(__DIR__.'/output/adium_180.png');
+            ->saveAs(__DIR__.'/output/testRotate180.png');
     }
 
     public function testPasteImage()
     {
         $editor = new ImageEditor(__DIR__.'/assets/adium.png');
         $editor->pasteImage(__DIR__.'/assets/awesome.png')
-            ->saveAs(__DIR__.'/output/adium_awesome.png');
+            ->saveAs(__DIR__.'/output/testPasteImage.png');
 
         $editor = new ImageEditor(__DIR__.'/assets/adium.png');
         $editor->pasteImage(__DIR__.'/assets/awesome.png', 10, 10, 100, 100)
-            ->saveAs(__DIR__.'/output/adium_awesome_scaled.png');
+            ->saveAs(__DIR__.'/output/testPasteImageScaled.png');
+    }
+
+    public function testWatermark()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
+        $iw = $editor->getWidth();
+        $ih = $editor->getWidth();
+
+        $watermark = new ImageEditor(__DIR__.'/assets/watermark.png');
+        $ww = $watermark->getWidth();
+        $wh = $watermark->getHeight();
+
+        $editor->pasteImage($watermark, $iw - $ww - 10, $ih - $wh - 10)
+            ->saveAs(__DIR__.'/output/testWatermark.jpeg');
     }
 
     /**
@@ -215,5 +229,28 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
         $editor->duplicate()->save();
+    }
+
+    /* ------- */
+
+    public function testGreyscale()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
+        $editor->greyscale()
+            ->saveAs(__DIR__.'/output/testGreyscale.jpeg');
+    }
+
+    public function testBrightness()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
+        $editor->brightness(-127)
+            ->saveAs(__DIR__.'/output/testBrightness-127.jpeg');
+    }
+
+    public function testColorize()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
+        $editor->colorize(255, 0, 0)
+            ->saveAs(__DIR__.'/output/testColorize-red.jpeg');
     }
 }
