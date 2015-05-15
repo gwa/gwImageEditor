@@ -133,7 +133,7 @@ class ImageEditor
     public function resizeTo($width, $height)
     {
         if ($this->width === $width && $this->height === $height) {
-            return false;
+            return $this;
         }
 
         $ratio = $width / $this->width;
@@ -299,10 +299,10 @@ class ImageEditor
     }
 
     /**
-     * @param int $value [0, 255]
-     * @param int $value [0, 255]
-     * @param int $value [0, 255]
-     * @param int $value [0, 127]
+     * @param int $red [0, 255]
+     * @param int $green [0, 255]
+     * @param int $blue [0, 255]
+     * @param int $alpha [0, 127]
      *
      * @return ImageEditor
      */
@@ -341,16 +341,16 @@ class ImageEditor
             $imageeditor = new ImageEditor($imageeditor);
         }
 
-        if (!$src_w) {
+        if ($src_w === null) {
             $src_w = $imageeditor->getWidth();
         }
-        if (!$src_h) {
+        if ($src_h === null) {
             $src_h = $imageeditor->getHeight();
         }
-        if (!$dst_w) {
+        if ($dst_w === null) {
             $dst_w = $src_w;
         }
-        if (!$dst_h) {
+        if ($dst_h === null) {
             $dst_h = $src_h;
         }
 
@@ -397,7 +397,7 @@ class ImageEditor
      */
     public function save($quality = self::DEFAULT_JPEG_QUALITY)
     {
-        if (!$this->filepath) {
+        if (!isset($this->filepath)) {
             throw new \LogicException('Use saveTo() to save an unnamed file.');
         }
         return $this->saveAs($this->filepath, $quality);
@@ -502,8 +502,6 @@ class ImageEditor
 
     /**
      * @param resource $resource
-     * @param int $width
-     * @param int $height
      */
     private function setResource($resource)
     {
