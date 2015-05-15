@@ -16,5 +16,9 @@
         "psr-4": {
             "Gwa\\Image\\": "src/Gwa/Image/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.6",
+        "squizlabs/php_codesniffer": "^2.3"
     }
 }
