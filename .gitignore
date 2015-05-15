@@ -1,3 +1,5 @@
 /vendor/
 tests/_report
 composer.lock
+tests/output
+!tests/output/.gitkeep
