@@ -9,9 +9,6 @@
         }
     ],
     "homepage": "https://github.com/gwa/gwImageEditor",
-    "require": {
-
-    },
     "autoload": {
         "psr-4": {
             "Gwa\\Image\\": "src/Gwa/Image/"
