@@ -10,7 +10,7 @@
     ],
     "homepage": "https://github.com/gwa/gwImageEditor",
     "require": {
-        "gwa/gw-exception": "1.0.*"
+
     },
     "autoload": {
         "psr-4": {

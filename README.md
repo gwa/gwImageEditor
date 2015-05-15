@@ -9,6 +9,10 @@ Install through composer:
 
 `composer require gwa/gw-image-editor`
 
+## Usage
+
+[...]
+
 ## Tests
 
 PHPUnit:
