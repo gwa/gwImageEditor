@@ -53,11 +53,11 @@ class ImageEditor
         }
 
         if (!file_exists($filepath)) {
-            throw new \InvalidArgumentException('File does not exist: '.$filepath);
+            throw new \InvalidArgumentException('File does not exist: ' . $filepath);
         }
 
         if (!is_readable($filepath)) {
-            throw new \Exception('File is not readable: '.$filepath);
+            throw new \Exception('File is not readable: ' . $filepath);
         }
 
         $this->filepath = $filepath;
@@ -92,7 +92,7 @@ class ImageEditor
 
         // calculate ratio based on widths
         $ratio = $maxwidth / $this->width;
-        if ($this->height*$ratio > $maxheight) {
+        if ($this->height * $ratio > $maxheight) {
             // new height greater than maximum
             $ratio = $maxheight / $this->height;
         }
@@ -121,14 +121,14 @@ class ImageEditor
         $ratio = $width / $this->width;
         $overhang = false;
 
-        if ($this->height*$ratio < $height) {
+        if ($this->height * $ratio < $height) {
             // - height is too small
             // - resize to height, and crop horizontal overhang
             $ratio = $height / $this->height;
             $overhang = true;
             $newwidth = round($this->width * $ratio);
             $newheight = $height;
-        } elseif ($this->height*$ratio > $height) {
+        } elseif ($this->height * $ratio > $height) {
             // - height is too large
             // - resize to width, and crop vertical overhang
             $overhang = true;
@@ -182,7 +182,7 @@ class ImageEditor
     public function crop($x, $y, $width, $height)
     {
         // check that crop is within bounds of image
-        if ($x+$width > $this->width || $y+$height > $this->height) {
+        if ($x + $width > $this->width || $y + $height > $this->height) {
             throw new \InvalidArgumentException('crop out of bounds');
         }
 
@@ -215,8 +215,8 @@ class ImageEditor
      */
     public function cropFromCenter($width, $height)
     {
-        $x = ($this->width/2) - ($width/2);
-        $y = ($this->height/2) - ($height/2);
+        $x = ($this->width / 2) - ($width / 2);
+        $y = ($this->height / 2) - ($height / 2);
 
         return $this->crop($x, $y, $width, $height);
     }
@@ -404,7 +404,7 @@ class ImageEditor
      */
     public function output($quality = self::DEFAULT_JPEG_QUALITY)
     {
-        header('Content-type: '.$this->mimetype);
+        header('Content-type: ' . $this->mimetype);
         $this->outputImage(null, $quality);
     }
 
