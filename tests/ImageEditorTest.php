@@ -30,7 +30,7 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     public function testFormatJPEG()
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
-        $this->assertEquals(ImageEditor::FORMAT_JPEG, $editor->getFormat());
+        $this->assertEquals(IMAGETYPE_JPEG, $editor->getType());
         $this->assertEquals('image/jpeg', $editor->getMimeType());
     }
 
@@ -44,14 +44,14 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
             return;
         }
         $editor = new ImageEditor(__DIR__.'/assets/awesome.png');
-        $this->assertEquals(ImageEditor::FORMAT_PNG, $editor->getFormat());
+        $this->assertEquals(IMAGETYPE_PNG, $editor->getType());
         $this->assertEquals('image/png', $editor->getMimeType());
     }
 
     public function testFormatGIF()
     {
         $editor = new ImageEditor(__DIR__.'/assets/test.gif');
-        $this->assertEquals(ImageEditor::FORMAT_GIF, $editor->getFormat());
+        $this->assertEquals(IMAGETYPE_GIF, $editor->getType());
         $this->assertEquals('image/gif', $editor->getMimeType());
     }
 
@@ -212,7 +212,7 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
         $iw = $editor->getWidth();
-        $ih = $editor->getWidth();
+        $ih = $editor->getHeight();
 
         $watermark = new ImageEditor(__DIR__.'/assets/watermark.png');
         $ww = $watermark->getWidth();
@@ -233,11 +233,11 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
 
     /* ------- */
 
-    public function testGreyscale()
+    public function testGrayscale()
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
-        $editor->greyscale()
-            ->saveAs(__DIR__.'/output/testGreyscale.jpeg');
+        $editor->grayscale()
+            ->saveAs(__DIR__.'/output/testGrayscale.jpeg');
     }
 
     public function testBrightness()

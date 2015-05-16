@@ -7,46 +7,43 @@ namespace Gwa\Image;
 class ImageEditor
 {
     /**
-     * @access private
+     * @var string
      */
     private $filepath;
 
     /**
-     * @access private
+     * @var int
      */
-    private $format;
+    private $type;
 
     /**
-     * @access private
+     * @var int
      */
     private $width;
 
     /**
-     * @access private
+     * @var int
      */
     private $height;
 
     /**
-     * @access private
+     * @var string
      */
     private $mimetype;
 
     /**
-     * @access private
+     * @var resource
      */
     private $resource;
 
     const DEFAULT_JPEG_QUALITY = 80;
-
-    const FORMAT_JPEG = 'JPEG';
-    const FORMAT_GIF  = 'GIF';
-    const FORMAT_PNG  = 'PNG';
 
     /**
      * Constuctor
      *
      * @param string $filepath Path to an existing image
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function __construct($filepath)
     {
@@ -74,11 +71,11 @@ class ImageEditor
     public function __destruct()
     {
         if (is_resource($this->resource)) {
-            ImageDestroy($this->resource);
+            imagedestroy($this->resource);
         }
     }
 
-    /* -------- PUBLIC METHODS -------- */
+    /* ---------------- */
 
     /**
      * Resizes image to be within a maximum width and a maximum height
@@ -103,22 +100,7 @@ class ImageEditor
         $newwidth = round($this->width * $ratio);
         $newheight = round($this->height * $ratio);
 
-        $newimage = $this->createImage($newwidth, $newheight);
-
-        imageCopyResampled(
-            $newimage,
-            $this->resource,
-            0,
-            0,
-            0,
-            0,
-            $newwidth,
-            $newheight,
-            $this->width,
-            $this->height
-        );
-
-        $this->setResource($newimage);
+        $this->resizeImage($newwidth, $newheight);
 
         return $this;
     }
@@ -158,8 +140,19 @@ class ImageEditor
             $newheight = $height;
         }
 
+        $this->resizeImage($newwidth, $newheight);
+
+        if ($overhang) {
+            // do the crop
+            $this->cropFromCenter($width, $height);
+        }
+
+        return $this;
+    }
+
+    private function resizeImage($newwidth, $newheight) {
         $newimage = $this->createImage($newwidth, $newheight);
-        imageCopyResampled(
+        imagecopyresampled(
             $newimage,
             $this->resource,
             0,
@@ -171,15 +164,61 @@ class ImageEditor
             $this->width,
             $this->height
         );
-
         $this->setResource($newimage);
+    }
 
-        if ($overhang) {
-            // do the crop
-            $this->cropFromCenter($width, $height);
+    /* crop -------- */
+
+    /**
+     * Crops the current image
+     *
+     * @param int $x
+     * @param int $y
+     * @param int $width
+     * @param int $height
+     *
+     * @return ImageEditor
+     */
+    public function crop($x, $y, $width, $height)
+    {
+        // check that crop is within bounds of image
+        if ($x+$width > $this->width || $y+$height > $this->height) {
+            throw new \InvalidArgumentException('crop out of bounds');
         }
 
+        $newwidth = $width;
+        $newheight = $height;
+
+        $newimage = $this->createImage($newwidth, $newheight);
+        imagecopy(
+            $newimage,
+            $this->resource,
+            0,
+            0,
+            $x,
+            $y,
+            $newwidth,
+            $newheight
+        );
+        $this->setResource($newimage);
+
         return $this;
+    }
+
+    /**
+     * Crops the image from the center
+     *
+     * @param int $width
+     * @param int $height
+     *
+     * @return ImageEditor
+     */
+    public function cropFromCenter($width, $height)
+    {
+        $x = ($this->width/2) - ($width/2);
+        $y = ($this->height/2) - ($height/2);
+
+        return $this->crop($x, $y, $width, $height);
     }
 
     /* rotation -------- */
@@ -215,68 +254,7 @@ class ImageEditor
         return $this;
     }
 
-    /* crop -------- */
-
-    /**
-     * Crops the current image
-     *
-     * @param int $x
-     * @param int $y
-     * @param int $width
-     * @param int $height
-     *
-     * @return ImageEditor
-     */
-    public function crop($x, $y, $width, $height)
-    {
-        // check that crop is within bounds of image
-        if ($x+$width > $this->width || $y+$height > $this->height) {
-            throw new \InvalidArgumentException('crop out of bounds');
-        }
-
-        $newwidth = $width;
-        $newheight = $height;
-        $newimage = $this->createImage($newwidth, $newheight);
-
-        imagecopy(
-            $newimage,
-            $this->resource,
-            0,
-            0,
-            $x,
-            $y,
-            $newwidth,
-            $newheight
-        );
-
-        $this->setResource($newimage);
-
-        return $this;
-    }
-
-    /**
-     * Crops the image from the center
-     *
-     * @param int $width
-     * @param int $height
-     *
-     * @return ImageEditor
-     */
-    public function cropFromCenter($width, $height)
-    {
-        $x = ($this->width/2) - ($width/2);
-        $y = ($this->height/2) - ($height/2);
-
-        return $this->crop($x, $y, $width, $height);
-    }
-
-    /**
-     * @return ImageEditor
-     */
-    public function greyscale()
-    {
-        return $this->grayscale();
-    }
+    /* filter -------- */
 
     /**
      * @return ImageEditor
@@ -413,20 +391,7 @@ class ImageEditor
      */
     public function saveAs($filepath, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        switch ($this->format) {
-            case self::FORMAT_JPEG:
-                ImageJpeg($this->resource, $filepath, $quality);
-                break;
-
-            case self::FORMAT_PNG:
-                ImagePng($this->resource, $filepath);
-                break;
-
-            case self::FORMAT_GIF:
-                ImageGif($this->resource, $filepath);
-                break;
-        }
-
+        $this->outputImage($filepath, $quality);
         $this->filepath = $filepath;
 
         return $this;
@@ -440,17 +405,26 @@ class ImageEditor
     public function output($quality = self::DEFAULT_JPEG_QUALITY)
     {
         header('Content-type: '.$this->mimetype);
-        switch ($this->format) {
-            case self::FORMAT_JPEG:
-                ImageJpeg($this->resource, null, $quality);
+        $this->outputImage(null, $quality);
+    }
+
+    /**
+     * @param string $filepath
+     * @param int $quality 0-100 (only for jpegs)
+     */
+    private function outputImage($filepath = null, $quality = self::DEFAULT_JPEG_QUALITY)
+    {
+        switch ($this->type) {
+            case IMAGETYPE_JPEG:
+                imagejpeg($this->resource, $filepath, $quality);
                 break;
 
-            case self::FORMAT_PNG:
-                ImagePng($this->resource);
+            case IMAGETYPE_PNG:
+                imagepng($this->resource, $filepath);
                 break;
 
-            case self::FORMAT_GIF:
-                ImageGif($this->resource);
+            case IMAGETYPE_GIF:
+                imagegif($this->resource, $filepath);
                 break;
         }
     }
@@ -458,43 +432,39 @@ class ImageEditor
     /* -------- */
 
     /**
-     * Retrieves format, width and height.
+     * Retrieves format.
      */
     private function extractFileData()
     {
-        if (!$info = getimagesize($this->filepath)) {
+        if (!$this->type = exif_imagetype($this->filepath)) {
             throw new \Exception('Wrong file type');
         }
 
-        // get type
-        $this->mimetype = $info['mime'];
-        $mt = strtolower($this->mimetype);
-
-        if (stristr($mt, 'gif')) {
-            $this->format = self::FORMAT_GIF;
-        } elseif (stristr($mt, 'jpg') || stristr($mt, 'jpeg')) {
-            $this->format = self::FORMAT_JPEG;
-        } elseif (stristr($mt, 'png')) {
-            $this->format = self::FORMAT_PNG;
-        } else {
-            throw new \Exception('Wrong file type');
+        switch ($this->type) {
+            case IMAGETYPE_GIF:
+                $this->mimetype = 'image/gif';
+                break;
+            case IMAGETYPE_JPEG:
+                $this->mimetype = 'image/jpeg';
+                break;
+            case IMAGETYPE_PNG:
+                $this->mimetype = 'image/png';
+                break;
+            default:
+                throw new \Exception('Unsupported image type');
         }
-
-        // get dimensions
-        $this->width  = $info[0];
-        $this->height = $info[1];
     }
 
     private function createResource()
     {
-        switch ($this->format) {
-            case self::FORMAT_GIF:
+        switch ($this->type) {
+            case IMAGETYPE_GIF:
                 $this->setResource(imagecreatefromgif($this->filepath));
                 break;
-            case self::FORMAT_JPEG:
+            case IMAGETYPE_JPEG:
                 $this->setResource(imagecreatefromjpeg($this->filepath));
                 break;
-            case self::FORMAT_PNG:
+            case IMAGETYPE_PNG:
                 $this->setResource(imagecreatefrompng($this->filepath));
                 break;
         }
@@ -537,13 +507,13 @@ class ImageEditor
     /* -------- GETTER / SETTERS -------- */
 
     /**
-     * Gets format of this image [GIF|JPEG|PNG]
+     * Gets format of this image [IMAGETYPE_GIF|IMAGETYPE_GIF|IMAGETYPE_GIF]
      *
-     * @return string
+     * @return int
      */
-    public function getFormat()
+    public function getType()
     {
-        return $this->format;
+        return $this->type;
     }
 
     /**
