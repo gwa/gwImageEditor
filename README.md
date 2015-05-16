@@ -52,7 +52,7 @@ $editor->resizeToWithin(500, 500)
 // - paste watermark into bottom right corner
 $editor = new ImageEditor('path/to/original.jpg');
 $iw = $editor->getWidth();
-$ih = $editor->getWidth();
+$ih = $editor->getHeight();
 
 $watermark = new ImageEditor('path/to/watermark.png');
 $ww = $watermark->getWidth();
@@ -65,7 +65,7 @@ $editor->pasteImage($watermark, $iw - $ww - $padding, $ih - $wh - $padding)
 
 // there are also filter methods available
 $editor = new ImageEditor('path/to/original.jpg');
-$editor->greyscale() // or grayscale()
+$editor->grayscale()
     ->brightness(127) // -255 to +255
     ->colorize(255, 0, 0, 0) // rgba
 ~~~
