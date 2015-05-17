@@ -210,6 +210,10 @@ class ImageEditor
         return $this->rotate(180);
     }
 
+    /**
+     * @param int $deg
+     * @return ImageEditor
+     */
     private function rotate($deg)
     {
         imagealphablending($this->resource, false);
@@ -407,19 +411,17 @@ class ImageEditor
             throw new \Exception('Wrong file type');
         }
 
-        switch ($this->type) {
-            case IMAGETYPE_GIF:
-                $this->mimetype = 'image/gif';
-                break;
-            case IMAGETYPE_JPEG:
-                $this->mimetype = 'image/jpeg';
-                break;
-            case IMAGETYPE_PNG:
-                $this->mimetype = 'image/png';
-                break;
-            default:
-                throw new \Exception('Unsupported image type');
+        $mimetypes = array(
+            IMAGETYPE_GIF  => 'image/gif',
+            IMAGETYPE_JPEG => 'image/jpeg',
+            IMAGETYPE_PNG  => 'image/png'
+        );
+
+        if (!array_key_exists($this->type, $mimetypes)) {
+            throw new \Exception('Unsupported image type');
         }
+
+        $this->mimetype = $mimetypes[$this->type];
     }
 
     private function createResource()
