@@ -67,7 +67,7 @@ $editor->pasteImage($watermark, $iw - $ww - $padding, $ih - $wh - $padding)
 // there are also filter methods available
 $editor = new ImageEditor('path/to/original.jpg');
 $editor->grayscale()
-    ->brightness(127) // -255 to +255
+    ->coloroverlay(0, 0, 0, 50) // 50% black overlay
     ->colorize(255, 0, 0, 0) // rgba
 ~~~
 
