@@ -383,7 +383,7 @@ class ImageEditor
      */
     private function outputImage($filepath = null, $type = null, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        $type = !isset($type) ?  $this->type : $type;
+        $type = !isset($type) ? $this->type : $type;
 
         switch ($type) {
             case IMAGETYPE_JPEG:
