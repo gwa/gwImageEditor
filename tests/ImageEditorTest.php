@@ -55,6 +55,15 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('image/gif', $editor->getMimeType());
     }
 
+    public function testSaveAsFormatPNG()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
+        $this->assertEquals(IMAGETYPE_JPEG, $editor->getType());
+        $this->assertEquals('image/jpeg', $editor->getMimeType());
+
+        $editor->saveAs(__DIR__.'/output/testSaveAsFormatPNG.png', IMAGETYPE_PNG);
+    }
+
     public function testDimensions()
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
