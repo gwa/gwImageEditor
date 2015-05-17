@@ -86,21 +86,11 @@ class ImageEditor
      */
     public function resizeToWithin($maxwidth, $maxheight)
     {
-        if ($this->width <= $maxwidth && $this->height <= $maxheight) {
-            return $this;
+        $dimensions = new Dimensions();
+
+        if ($newd = $dimensions->resizeToWithin($this->width, $this->height, $maxwidth, $maxheight)) {
+            $this->resizeImage($newd->width, $newd->height);
         }
-
-        // calculate ratio based on widths
-        $ratio = $maxwidth / $this->width;
-        if ($this->height * $ratio > $maxheight) {
-            // new height greater than maximum
-            $ratio = $maxheight / $this->height;
-        }
-
-        $newwidth = round($this->width * $ratio);
-        $newheight = round($this->height * $ratio);
-
-        $this->resizeImage($newwidth, $newheight);
 
         return $this;
     }
@@ -114,37 +104,13 @@ class ImageEditor
      */
     public function resizeTo($width, $height)
     {
-        if ($this->width === $width && $this->height === $height) {
-            return $this;
-        }
+        $dimensions = new Dimensions();
 
-        $ratio = $width / $this->width;
-        $overhang = false;
-
-        if ($this->height * $ratio < $height) {
-            // - height is too small
-            // - resize to height, and crop horizontal overhang
-            $ratio = $height / $this->height;
-            $overhang = true;
-            $newwidth = round($this->width * $ratio);
-            $newheight = $height;
-        } elseif ($this->height * $ratio > $height) {
-            // - height is too large
-            // - resize to width, and crop vertical overhang
-            $overhang = true;
-            $newwidth = $width;
-            $newheight = round($this->height * $ratio);
-        } else {
-            // proportions are correct
-            $newwidth = $width;
-            $newheight = $height;
-        }
-
-        $this->resizeImage($newwidth, $newheight);
-
-        if ($overhang) {
-            // do the crop
-            $this->cropFromCenter($width, $height);
+        if ($newd = $dimensions->resizeTo($this->width, $this->height, $width, $height)) {
+            $this->resizeImage($newd->width, $newd->height);
+            if ($newd->overhang) {
+                $this->cropFromCenter($width, $height);
+            }
         }
 
         return $this;
@@ -186,10 +152,7 @@ class ImageEditor
             throw new \InvalidArgumentException('crop out of bounds');
         }
 
-        $newwidth = $width;
-        $newheight = $height;
-
-        $newimage = $this->createImage($newwidth, $newheight);
+        $newimage = $this->createImage($width, $height);
         imagecopy(
             $newimage,
             $this->resource,
@@ -197,8 +160,8 @@ class ImageEditor
             0,
             $x,
             $y,
-            $newwidth,
-            $newheight
+            $width,
+            $height
         );
         $this->setResource($newimage);
 
