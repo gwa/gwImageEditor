@@ -236,7 +236,7 @@ class ImageEditor
      * @param int $red [0, +255]
      * @param int $green [0, +255]
      * @param int $blue [0, +255]
-     * @param int $aplha [0, 1]
+     * @param int $alpha [0, 1]
      *
      * @return ImageEditor
      */
