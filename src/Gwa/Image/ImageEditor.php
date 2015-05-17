@@ -379,9 +379,7 @@ class ImageEditor
      */
     private function outputImage($filepath = null, $type = null, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        $type = !isset($type) ? $this->type : $type;
-
-        switch ($type) {
+        switch ($type || $this->type) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->resource, $filepath, $quality);
                 break;
@@ -407,19 +405,17 @@ class ImageEditor
             throw new \Exception('Wrong file type');
         }
 
-        switch ($this->type) {
-            case IMAGETYPE_GIF:
-                $this->mimetype = 'image/gif';
-                break;
-            case IMAGETYPE_JPEG:
-                $this->mimetype = 'image/jpeg';
-                break;
-            case IMAGETYPE_PNG:
-                $this->mimetype = 'image/png';
-                break;
-            default:
-                throw new \Exception('Unsupported image type');
+        $mimetypes = array(
+            IMAGETYPE_GIF  => 'image/gif',
+            IMAGETYPE_JPEG => 'image/jpeg',
+            IMAGETYPE_PNG  => 'image/png'
+        );
+
+        if (!array_key_exists($this->type, $mimetypes)) {
+            throw new \Exception('Unsupported image type');
         }
+
+        $this->mimetype = $mimetypes[$this->type];
     }
 
     private function createResource()
