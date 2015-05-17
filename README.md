@@ -46,7 +46,8 @@ $editor = new ImageEditor('path/to/original.jpg');
 $editor->resizeToWithin(500, 500)
     ->saveAs('path/to/medium.jpg')
     ->resizeTo(100, 100)
-    ->saveAs('path/to/thumbnail.jpg');
+    ->saveAs('path/to/thumbnail.jpg')
+    ->saveAs('path/to/thumbnail.png', IMAGETYPE_PNG);
 
 // another image can be "pasted" in (e.g. a watermark)
 // - paste watermark into bottom right corner
