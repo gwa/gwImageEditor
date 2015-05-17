@@ -233,13 +233,19 @@ class ImageEditor
     }
 
     /**
-     * @param int $value [-255, +255]
+     * @param int $red [0, +255]
+     * @param int $green [0, +255]
+     * @param int $blue [0, +255]
+     * @param int $alpha [0, 1]
      *
      * @return ImageEditor
      */
-    public function brightness($value)
+    public function coloroverlay($red, $green, $blue, $alpha = 50)
     {
-        imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $value);
+        imagealphablending($this->resource, true);
+        $color = imagecolorallocatealpha($this->resource, $red, $green, $blue, $alpha * 1.27);
+        imagefilledrectangle($this->resource, 0, 0, $this->width, $this->height, $color);
+        imagealphablending($this->resource, false);
         return $this;
     }
 
