@@ -249,11 +249,18 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
             ->saveAs(__DIR__.'/output/testGrayscale.jpeg');
     }
 
-    public function testBrightness()
+    public function testColoroverlay()
     {
         $editor = new ImageEditor(__DIR__.'/assets/octopus.jpeg');
-        $editor->brightness(-127)
-            ->saveAs(__DIR__.'/output/testBrightness-127.jpeg');
+        $editor->coloroverlay(0, 0, 0, 50)
+            ->saveAs(__DIR__.'/output/testColoroverlay.jpeg');
+    }
+
+    public function testColoroverlayPNG()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/adium.png');
+        $editor->coloroverlay(0, 0, 0, 50)
+            ->saveAs(__DIR__.'/output/testColoroverlay.png');
     }
 
     public function testColorize()
