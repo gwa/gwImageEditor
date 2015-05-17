@@ -385,13 +385,14 @@ class ImageEditor
      * Saves the image under a path
      *
      * @param string $filepath
+     * @param int $type IMAGETYPE constant
      * @param int $quality 0-100 (only for jpegs)
      *
      * @return ImageEditor
      */
-    public function saveAs($filepath, $quality = self::DEFAULT_JPEG_QUALITY)
+    public function saveAs($filepath, $type = null, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        $this->outputImage($filepath, $quality);
+        $this->outputImage($filepath, $type, $quality);
         $this->filepath = $filepath;
 
         return $this;
@@ -410,11 +411,14 @@ class ImageEditor
 
     /**
      * @param string $filepath
+     * @param int $type IMAGETYPE constant
      * @param int $quality 0-100 (only for jpegs)
      */
-    private function outputImage($filepath = null, $quality = self::DEFAULT_JPEG_QUALITY)
+    private function outputImage($filepath = null, $type = null, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        switch ($this->type) {
+        $type = !isset($type) ? $this->type : $type;
+
+        switch ($type) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->resource, $filepath, $quality);
                 break;
