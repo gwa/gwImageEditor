@@ -210,6 +210,10 @@ class ImageEditor
         return $this->rotate(180);
     }
 
+    /**
+     * @param int $deg
+     * @return ImageEditor
+     */
     private function rotate($deg)
     {
         imagealphablending($this->resource, false);
@@ -379,7 +383,9 @@ class ImageEditor
      */
     private function outputImage($filepath = null, $type = null, $quality = self::DEFAULT_JPEG_QUALITY)
     {
-        switch ($type || $this->type) {
+        $type = !isset($type) ?  $this->type : $type;
+
+        switch ($type) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->resource, $filepath, $quality);
                 break;

@@ -31,6 +31,13 @@ class Dimensions
         return $dimensions;
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @param int $newwidth
+     * @param int $newheight
+     * @return \stdClass
+     */
     public function resizeTo($width, $height, $newwidth, $newheight)
     {
         if ($width === $newwidth && $height === $newheight) {
