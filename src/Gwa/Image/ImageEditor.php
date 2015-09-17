@@ -75,7 +75,7 @@ class ImageEditor
         }
     }
 
-    /* ---------------- */
+    /* resize ---------------- */
 
     /**
      * Resizes image to be within a maximum width and a maximum height
@@ -89,7 +89,7 @@ class ImageEditor
         $dimensions = new Dimensions();
 
         if ($newd = $dimensions->resizeToWithin($this->width, $this->height, $maxwidth, $maxheight)) {
-            $this->resizeImage($newd->width, $newd->height);
+            $this->resizeToDimensions($newd);
         }
 
         return $this;
@@ -97,17 +97,18 @@ class ImageEditor
 
     /**
      * Resizes image to an exact width and height, maintaining aspect ratio. Any overhang is cropped.
+     * If `null` is passed as width or height, image is resized to the new width or height with maintained aspect ratio, without cropping.
      *
-     * @param int $width
-     * @param int $height
+     * @param int|null $width
+     * @param int|null $height
      * @return ImageEditor
      */
-    public function resizeTo($width, $height)
+    public function resizeTo($width, $height = null)
     {
         $dimensions = new Dimensions();
 
         if ($newd = $dimensions->resizeTo($this->width, $this->height, $width, $height)) {
-            $this->resizeImage($newd->width, $newd->height);
+            $this->resizeToDimensions($newd);
             if ($newd->overhang) {
                 $this->cropFromCenter($width, $height);
             }
@@ -116,7 +117,13 @@ class ImageEditor
         return $this;
     }
 
-    private function resizeImage($newwidth, $newheight) {
+    private function resizeToDimensions(\stdClass $dimensions)
+    {
+        $this->resizeImage($dimensions->width, $dimensions->height);
+    }
+
+    private function resizeImage($newwidth, $newheight)
+    {
         $newimage = $this->createImage($newwidth, $newheight);
         imagecopyresampled(
             $newimage,

@@ -35,6 +35,14 @@ $editor->resizeToWithin(640, 480)
 $editor->resizeTo(640, 480)
     ->save();
 
+// resize image to exactly 640px width, preserving aspect ratio
+$editor->resizeTo(640)
+    ->save();
+
+// resize image to exactly 480px height, preserving aspect ratio
+$editor->resizeTo(null, 480)
+    ->save();
+
 // crop the image: x, y, width, height
 $editor->crop(10, 10, 100, 100)
     ->save();
@@ -84,4 +92,3 @@ Code style (PSR-2)
 ```
 $ ./vendor/bin/phpcs --standard=PSR2 src
 ```
-

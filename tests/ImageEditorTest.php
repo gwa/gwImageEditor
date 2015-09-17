@@ -146,6 +146,22 @@ class ImageEditorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(50, $editor->getHeight());
     }
 
+    public function testResizeToWidthOnly()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/adium.png');
+        $editor->resizeTo(100);
+        $this->assertEquals(100, $editor->getWidth());
+        $this->assertEquals(142, $editor->getHeight());
+    }
+
+    public function testResizeToHeightOnly()
+    {
+        $editor = new ImageEditor(__DIR__.'/assets/adium.png');
+        $editor->resizeTo(null, 200);
+        $this->assertEquals(141, $editor->getWidth());
+        $this->assertEquals(200, $editor->getHeight());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
